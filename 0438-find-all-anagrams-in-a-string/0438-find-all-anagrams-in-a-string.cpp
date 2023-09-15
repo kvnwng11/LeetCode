@@ -20,24 +20,21 @@ public:
         // Initialize
         for (int i=0; i<p.size(); ++i) {
             pChar[(p[i] - 'a')]++;
-            sChar[(s[i] - 'a')]++;
-        }
-        if (equal(sChar, pChar)) {
-                ans.push_back(0);
         }
 
         // One pass
-        int left = 0;
-        for (int i=p.size(); i<s.size(); ++i) {
+        for (int i=0; i<s.size(); ++i) {
             // Remove from window
-            sChar[(s[left] - 'a')]--;
+            if (i >= p.size())
+                sChar[(s[i - p.size()] - 'a')]--;
+
+            // Add to window
             sChar[(s[i] - 'a')]++;
 
             // Check if equal
-            if (equal(sChar, pChar)) {
-                ans.push_back(left+1);
+            if (i >= p.size()-1 and equal(sChar, pChar)) {
+                ans.push_back(i - p.size() + 1);
             }
-            left++;
         }
 
         return ans;
