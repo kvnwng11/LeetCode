@@ -1,28 +1,31 @@
 class Solution {
 public:
     int trap(vector<int>& height) {
-        if (height.size() <= 2)
-            return 0;
-
-        stack<int> s;
+        int left = 0, right = height.size()-1;
         int ans = 0;
-
-        // Search
-        for (int i=0; i<height.size(); ++i) {
-            while (!s.empty() and height[i] > height[s.top()]) {
-                int top = s.top();
-                s.pop();
-
-                if (s.empty())
-                    break;
-
-                int w = i - s.top() - 1;
-                int h = min(height[i], height[s.top()]) - height[top];
-                ans += w * h;
+        int leftMax = 0, rightMax = 0;
+        
+        while (left < right) {
+            if (height[left] < height[right]) {
+                if (height[left] >= leftMax) {
+                    leftMax = height[left];
+                }
+                else {
+                    ans += leftMax - height[left];
+                }
+                left++;
             }
-
-            s.push(i);
+            else {
+                if (height[right] >= rightMax) {
+                    rightMax = height[right];
+                }
+                else {
+                    ans += rightMax - height[right];
+                }
+                --right;
+            }
         }
+
 
         return ans;
     }
