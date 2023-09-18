@@ -1,50 +1,55 @@
 class Solution {
-private:
-    // a1 is s, a2 is t
-    bool isIncluded(int *a1, int *a2) {
-        for (int i=0; i<60; ++i) {
-            if (a2[i] > 0 and a1[i] < a2[i])
-                return 0;
-        }
-        return 1;
-    }
-
 public:
     string minWindow(string s, string t) {
         if (t.size() > s.size()) return "";
-        int length = INT_MAX;
+        int length = -1;
         int start = 0;
 
         int left = 0;
-        int sfreq[60] = {0};
-        int tfreq[60] = {0};
+        unordered_map<char, int> dT;
+        unordered_map<char, int> dS;
 
         // Initialize
-        for (int i=0; i<t.size(); ++i) {
-            tfreq[(t[i] - 'A')]++;
-        }
+        for (int i=0; i<t.size(); ++i)
+            dT[t[i]] += 1;
+
+        int required = dT.size();
+        int formed = 0;
 
         // Sliding window
         for (int right = 0; right < s.size(); ++right) {
-            // Grow window until it includes t
-            if (find(t.begin(), t.end(), s[right]) != t.end())
-                sfreq[(s[right] - 'A')]++;
+            int c = s[right];
+
+            // Insert if c is in t
+            if (dT.find(c) != dT.end()) {
+                dS[c] += 1;
+
+                // Check if match
+                if (dT[c] == dS[c])
+                    formed++;
+            }
 
             // Remove left while window contains t
-            while (left <= right and isIncluded(sfreq, tfreq)) {
+            while (left <= right and formed == required) {
                 // New answer
-                if (right - left + 1 < length) {
+                if (length == -1 or right - left + 1 < length) {
                     length = right - left + 1;
                     start = left;
                 }
 
                 // Remove
-                if (find(t.begin(), t.end(), s[right]) != t.end())
-                    sfreq[(s[left] - 'A')]--;
+                char toRemove = s[left];
+                if (dT.find(toRemove) != dT.end()) {
+                    dS[toRemove] -= 1;
+
+                    if (dS[toRemove] < dT[toRemove])
+                        formed--;
+                }
+
                 left++;
             }
         }
 
-        return length == INT_MAX? "": s.substr(start, length);
+        return length == -1? "": s.substr(start, length);
     }
 };
