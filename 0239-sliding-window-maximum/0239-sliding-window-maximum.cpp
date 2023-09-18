@@ -5,8 +5,11 @@ public:
         deque<int> d;
 
         for (int i=0; i<nums.size(); ++i) {
+            // Remove leftmost
             if (!d.empty() and d.front() == i-k)
                 d.pop_front();
+
+            // Remove anything less than the current number
             while (!d.empty() and nums[i] >= nums[d.back()])
                 d.pop_back();
             
