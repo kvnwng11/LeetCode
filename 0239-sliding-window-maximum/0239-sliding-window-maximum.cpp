@@ -16,7 +16,6 @@ private:
 
             int getMax() {
                 if (pq.empty()) {
-                    cout << "Emtpy queue\n";
                     return -1;
                 }
 
