@@ -27,7 +27,8 @@ public:
         // Sliding window
         for (int right = 0; right < s.size(); ++right) {
             // Grow window until it includes t
-            sfreq[(s[right] - 'A')]++;
+            if (find(t.begin(), t.end(), s[right]) != t.end())
+                sfreq[(s[right] - 'A')]++;
 
             // Remove left while window contains t
             while (left <= right and isIncluded(sfreq, tfreq)) {
@@ -38,7 +39,8 @@ public:
                 }
 
                 // Remove
-                sfreq[(s[left] - 'A')]--;
+                if (find(t.begin(), t.end(), s[right]) != t.end())
+                    sfreq[(s[left] - 'A')]--;
                 left++;
             }
         }
