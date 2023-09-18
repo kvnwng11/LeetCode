@@ -1,51 +1,19 @@
 class Solution {
-private:
-    class MaxQueue {
-        private:
-            priority_queue<int> pq;
-            unordered_map<int, int> window;
-            int k = 0;
-
-        public:
-            MaxQueue(int _k) : k{_k} {}
-
-            void insert(int num) {
-                pq.push(num);
-                window[num] += 1;
-            }
-
-            int getMax() {
-                if (pq.empty()) {
-                    return -1;
-                }
-
-                int top = pq.top();
-                while (window.find(top) == window.end() or window[top] == 0) {
-                    pq.pop();
-                    top = pq.top();
-                }
-                return pq.top();
-            }
-
-            void pop(int num) {
-                window[num] -= 1;
-            }
-
-            ~MaxQueue() {}
-    };
-
 public:
     vector<int> maxSlidingWindow(vector<int>& nums, int k) {
         vector<int> ans;
-        MaxQueue q(k);
+        deque<int> d;
+
         for (int i=0; i<nums.size(); ++i) {
-            q.insert(nums[i]);
+            if (!d.empty() and d.front() == i-k)
+                d.pop_front();
+            while (!d.empty() and nums[i] >= nums[d.back()])
+                d.pop_back();
             
-            if (i >= k-1) {
-                int m = q.getMax();
-                ans.push_back(q.getMax());
-                q.pop(nums[i-k+1]);
-            }
+            d.push_back(i);
+
+            if (i >= k-1)
+                ans.push_back(nums[d.front()]);
         }
 
         return ans;
