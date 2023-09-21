@@ -11,6 +11,7 @@
 class Solution {
 public:
     ListNode* deleteDuplicates(ListNode* head) {
+        if (!head) return head;
         ListNode* sentinel = new ListNode(0, head);
         ListNode* prev = sentinel;
         while (head) {
@@ -20,9 +21,9 @@ public:
                 }
                 prev->next = head->next;
             }
-            else
-                prev = prev->next;
-
+            else {
+                prev = head;
+            }
             head = head->next;
         }
 
