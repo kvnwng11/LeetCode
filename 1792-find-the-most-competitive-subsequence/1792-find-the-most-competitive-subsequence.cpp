@@ -18,7 +18,7 @@ public:
             ans.push_back(nums[i]);
         }
 
-        while (maxPop--) {
+        while (ans.size() > k) {
             ans.pop_back();
         }
 
