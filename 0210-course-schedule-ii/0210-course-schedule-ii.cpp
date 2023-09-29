@@ -34,9 +34,7 @@ public:
 
         if (ans.size() == numCourses)
             return ans;
-        else {
-            vector<int> v;
-            return v;
-        }
+        else 
+            return {};
     }
 };
