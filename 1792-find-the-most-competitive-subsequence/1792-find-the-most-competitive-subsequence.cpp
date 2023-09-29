@@ -1,9 +1,4 @@
 class Solution {
-private:
-    void helper() {
-
-    }
-
 public:
     vector<int> mostCompetitive(vector<int>& nums, int k) {
         vector<int> ans;
