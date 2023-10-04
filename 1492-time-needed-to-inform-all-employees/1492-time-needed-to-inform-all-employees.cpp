@@ -12,16 +12,20 @@ public:
 
         // BFS
         queue<pair<int, int>> q;
-        q.push({headID, informTime[headID]});
+        q.push(make_pair(headID, 0));
         int ans = 0;
         while (!q.empty()) {
-            auto [person, time] = q.front();
-            q.pop();
+            int n = q.size();
+            for (int i=0; i<n; ++i) {
+                auto [person, time] = q.front();
+                q.pop();
 
-            ans = max(time, ans);
+                int dur = time + informTime[person];
+                ans = max(time, ans);
 
-            for (int sub : adjList[person]) {
-                q.push({sub, time + informTime[sub]});
+                for (int sub : adjList[person]) {
+                    q.push(make_pair(sub, dur));
+                }
             }
         }
         return ans;
