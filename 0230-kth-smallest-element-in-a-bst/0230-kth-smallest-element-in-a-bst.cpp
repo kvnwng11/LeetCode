@@ -11,23 +11,18 @@
  */
 class Solution {
 private:
-    set<int> sorted;
+    vector<int> sorted;
 
     void solve(TreeNode* curr) {
         if (!curr) return;
 
-        sorted.insert(curr->val);
         solve(curr->left);
+        sorted.push_back(curr->val);
         solve(curr->right);
     }
 public:
     int kthSmallest(TreeNode* root, int k) {
         solve(root);
-        auto itr = sorted.begin();
-        k--;
-        while (k--) {
-            itr++;
-        }
-        return *itr;
+        return sorted[k-1];
     }
 };
