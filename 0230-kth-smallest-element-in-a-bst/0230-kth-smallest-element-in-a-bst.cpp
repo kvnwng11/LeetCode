@@ -10,19 +10,25 @@
  * };
  */
 class Solution {
-private:
-    vector<int> sorted;
-
-    void solve(TreeNode* curr) {
-        if (!curr) return;
-
-        solve(curr->left);
-        sorted.push_back(curr->val);
-        solve(curr->right);
-    }
 public:
     int kthSmallest(TreeNode* root, int k) {
-        solve(root);
-        return sorted[k-1];
+        stack<TreeNode*> s;
+        int ans = 0;
+        while (root or !s.empty()) {
+            while (root) {
+                s.push(root);
+                root = root->left;
+            }
+            root = s.top();
+            s.pop();
+            if (--k == 0) {
+                ans = root->val;
+                break;
+            }
+
+            root = root->right;
+        }
+        
+        return ans;
     }
 };
