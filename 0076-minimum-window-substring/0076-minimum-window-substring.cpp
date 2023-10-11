@@ -14,10 +14,18 @@ public:
             countT[t[i]] += 1;
         }
 
+        vector<pair<char, int>> filteredS;
+        for (int i=0; i<s.size(); ++i) {
+            if (countT.count(s[i])) {
+                filteredS.push_back({s[i], i});
+            }
+        }
+
         int formed = 0, required = countT.size();
-        for (int right = 0; right < s.size(); ++right) {
+        for (int right = 0; right < filteredS.size(); ++right) {
             // Add to window
-            char c = s[right];
+            char c = filteredS[right].first;
+            int idx = filteredS[right].second;
             countS[c] += 1;
 
             // Check if occurances match up
@@ -26,13 +34,16 @@ public:
             }
 
             while (left <= right and formed == required) {
+                int end = filteredS[right].second;
+                int start = filteredS[left].second;
+
                 // New answer
-                if (right - left + 1 < length) {
-                    length = right - left + 1;
-                    ansLeft = left;
+                if (end - start + 1 < length) {
+                    length = end - start + 1;
+                    ansLeft = start;
                 }
 
-                c = s[left];
+                c = filteredS[left].first;
                 countS[c] -= 1;
 
                 if (countT.count(c) and countS[c] < countT[c]) {
