@@ -2,54 +2,47 @@ class Solution {
 public:
     string minWindow(string s, string t) {
         if (t.size() > s.size()) return "";
-        int length = -1;
-        int start = 0;
-
+        if (!t.size() or !s.size()) return "";
+        
         int left = 0;
-        unordered_map<char, int> dT;
-        unordered_map<char, int> dS;
+        int ansLeft = 0, length = INT_MAX;
 
-        // Initialize
-        for (int i=0; i<t.size(); ++i)
-            dT[t[i]] += 1;
+        unordered_map<char, int> countS;
+        unordered_map<char, int> countT;
 
-        int required = dT.size();
-        int formed = 0;
+        for (int i=0; i<t.size(); ++i) {
+            countT[t[i]] += 1;
+        }
 
-        // Sliding window
+        int formed = 0, required = countT.size();
         for (int right = 0; right < s.size(); ++right) {
-            int c = s[right];
+            // Add to window
+            char c = s[right];
+            countS[c] += 1;
 
-            // Insert if c is in t
-            if (dT.find(c) != dT.end()) {
-                dS[c] += 1;
-
-                // Check if match
-                if (dT[c] == dS[c])
-                    formed++;
+            // Check if occurances match up
+            if (countT.count(c) and countS[c] == countT[c]) {
+                formed++;
             }
 
-            // Remove left while window contains t
             while (left <= right and formed == required) {
                 // New answer
-                if (length == -1 or right - left + 1 < length) {
+                if (right - left + 1 < length) {
                     length = right - left + 1;
-                    start = left;
+                    ansLeft = left;
                 }
 
-                // Remove
-                char toRemove = s[left];
-                if (dT.find(toRemove) != dT.end()) {
-                    dS[toRemove] -= 1;
+                c = s[left];
+                countS[c] -= 1;
 
-                    if (dS[toRemove] < dT[toRemove])
-                        formed--;
+                if (countT.count(c) and countS[c] < countT[c]) {
+                    formed--;
                 }
 
                 left++;
             }
         }
 
-        return length == -1? "": s.substr(start, length);
+        return length == INT_MAX? "" : s.substr(ansLeft, length);
     }
 };
