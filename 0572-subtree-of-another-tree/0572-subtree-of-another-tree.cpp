@@ -11,33 +11,27 @@
  */
 class Solution {
 private:
-    vector<TreeNode*> nodes;
+    bool isSameTree(TreeNode* root, TreeNode* subRoot) {
+        if (!root and !subRoot) return 1;
+        if (!root or !subRoot) return 0;
 
-    bool isSame(TreeNode* p, TreeNode* q) {
-        if (!p and !q) return 1;
-        if (!p or !q) return 0;
-        if (p->val != q->val) return 0;
-        return isSame(p->left, q->left) and isSame(p->right, q->right);
-    }
+        if (root->val != subRoot->val)
+            return 0;
 
-    int getDepth(TreeNode* n, int target) {
-        if (!n) return -1;
-        int depth = max(getDepth(n->left, target), getDepth(n->right, target)) + 1;
-
-        if (depth == target)
-            nodes.push_back(n);
+        bool l = isSameTree(root->left, subRoot->left);
+        bool r = isSameTree(root->right, subRoot->right);
         
-        return depth;
+        return l and r;
     }
-
 public:
     bool isSubtree(TreeNode* root, TreeNode* subRoot) {
         if (!root and !subRoot) return 1;
         if (!root or !subRoot) return 0;
-        getDepth(root, getDepth(subRoot, -1));
-        for (TreeNode* node : nodes)
-            if (isSame(subRoot, node))
-                return 1;
-        return 0;
+
+        if (isSameTree(root, subRoot)) {
+            return 1;
+        }
+        
+        return isSubtree(root->left, subRoot) or isSubtree(root->right, subRoot);
     }
 };
