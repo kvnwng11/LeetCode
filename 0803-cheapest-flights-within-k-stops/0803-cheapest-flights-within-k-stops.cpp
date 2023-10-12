@@ -1,20 +1,21 @@
 class Solution {
 public:
     int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
-        vector<int> cost(n+1, INT_MAX);
-        cost[src] = 0;
+        vector<int> dist(n+1, INT_MAX);
+        dist[src] = 0;
         for (int i=0; i<=k; ++i) {
-            vector<int> temp = cost;
-
-            for (auto f : flights) {
-                int curr = f[0], next = f[1], price = f[2];
-                if (cost[curr] == INT_MAX)
-                    continue;
-                temp[next] = min(temp[next], cost[curr] + price);
+            vector<int> temp(dist);
+            for (auto &flight : flights) {
+                int from = flight[0];
+                int to = flight[1];
+                int price = flight[2];
+                if (dist[from] != INT_MAX) {
+                    temp[to] = min(temp[to], dist[from] + price);
+                }
             }
-            
-            cost = temp;
+            dist = temp;
         }
-        return cost[dst] == INT_MAX? -1 : cost[dst];
+
+        return dist[dst] == INT_MAX? -1 : dist[dst];
     }
 };
