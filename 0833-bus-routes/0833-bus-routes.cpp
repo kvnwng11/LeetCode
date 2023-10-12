@@ -1,31 +1,42 @@
 class Solution {
 public:
     int numBusesToDestination(vector<vector<int>>& routes, int source, int target) {
-        unordered_map<int, vector<int>> bus_nodes;
+        // Create adj list
+        unordered_map<int, vector<int>> adjList;
         for (int i=0; i<routes.size(); ++i) {
-            for (int j : routes[i])
-                bus_nodes[j].push_back(i);
+            for (int stop : routes[i])
+                adjList[stop].push_back(i);
         }
 
-        unordered_set<int> seen;
+        // BFS
+        unordered_set<int> seen; // seen stops
         queue<pair<int, int>> q;
         q.push({source, 0});
         while (!q.empty()) {
-            auto [stop, numBuses] = q.front();
+            auto [curr, numStops] = q.front();
             q.pop();
 
-            if (stop == target)
-                return numBuses;
+            //cout << curr << endl;
 
-            for (int bus_stop : bus_nodes[stop]) {
-                if (seen.find(bus_stop) == seen.end()) {
-                    for (int node : routes[bus_stop]) {
-                        q.push({node, numBuses+1});
+            // At destination
+            if (curr == target) 
+                return numStops;
+
+
+            // Go over buses
+            for (int bus : adjList[curr]) {
+                if (seen.find(bus) == seen.end()) {
+
+                    // Go over stops
+                    for (int nextStop : routes[bus]) {
+                        q.push({nextStop, numStops+1});
                     }
-                    seen.insert(bus_stop);
+
+                    seen.insert(bus);
+
                 }
             }
         }
         return -1;
-    }   
+    }
 };
