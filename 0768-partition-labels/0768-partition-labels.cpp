@@ -2,12 +2,8 @@ class Solution {
 public:
     vector<int> partitionLabels(string s) {
         // Get start and ends
-        unordered_map<char, int> starts;
         unordered_map<char, int> ends;
         for (int i=0; i<s.size(); ++i) {
-            if (!starts.count(s[i])) {
-                starts[s[i]] = i;
-            }
             ends[s[i]] = i;
         }
 
