@@ -9,19 +9,15 @@ public:
 
         vector<int> ans;
         int endOfSegment = ends[s[0]];
-        int count = 0;
+        int left = 0;
         for (int i=0; i<s.size(); ++i) {
-            if (i > endOfSegment) {
-                ans.push_back(count);
-                endOfSegment = ends[s[i]];
-                count = 1;
-            }
-            else {
-                count++;
-                endOfSegment = max(endOfSegment, ends[s[i]]);
+            endOfSegment = max(endOfSegment, ends[s[i]]);
+
+            if (i == endOfSegment) {
+                ans.push_back(i - left + 1);
+                left = i + 1;
             }
         }
-        ans.push_back(count);
 
         return ans;
     }
