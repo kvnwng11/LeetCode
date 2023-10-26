@@ -1,32 +1,24 @@
+bool MyCompare(vector<int> &v1, vector<int> &v2) {
+    return v1[1] < v2[1];
+}
+
 class Solution {
 public:
     int eraseOverlapIntervals(vector<vector<int>>& intervals) {
-        sort(intervals.begin(), intervals.end());
+        sort(intervals.begin(), intervals.end(), MyCompare);
 
-        int start = intervals[0][0], end = intervals[0][1];
+        int end = INT_MIN;
         int ans = 0;
-        for (int i=1; i<intervals.size(); ++i) {
+        for (int i=0; i<intervals.size(); ++i) {
             int currStart = intervals[i][0];
             int currEnd = intervals[i][1];
 
-            int dist = end - start;
-            int currDist = currEnd - currStart;
-
-            // remove one
-            if (currStart < end) {
-                ans++;
-
-                // keep smaller interval
-                if (currEnd <= end) {
-                    start = currStart;
-                    end = currEnd;
-                }
-            }
-            else {
-                start = currStart;
+            if (currStart >= end) {
                 end = currEnd;
             }
-            
+            else {
+                ans++;
+            }
         }
 
         return ans;
