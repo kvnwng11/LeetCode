@@ -2,26 +2,17 @@ class Solution {
 public:
     int longestPalindrome(string s) {
         unordered_map<char, int> counts;
-        for (char c : s)
+        int ans = 0;
+
+        for (char c : s) {
             counts[c] += 1;
 
-        bool foundOdd = false;
-        int ans = 0;
-        for (auto &p : counts) {
-            int count = p.second;
-
-            if (count % 2 == 1) {
-                foundOdd = true;
-                ans += count-1;
+            if (counts[c] == 2) {
+                ans += 2;
+                counts[c] = 0;
             }
-            else
-                ans += count;
-            
         }
 
-        if (foundOdd)
-            ans += 1;
-
-        return ans;
+        return ans == s.size()? ans : ans+1;
     }
 };
