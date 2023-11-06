@@ -1,20 +1,21 @@
 class SeatManager {
 private:
-    set<int> unreserved;
+    priority_queue<int, vector<int>, greater<int>> unreserved;
+
 public:
     SeatManager(int n) {
         for (int i=1; i<=n; ++i)
-            unreserved.insert(i);
+            unreserved.push(i);
     }
     
     int reserve() {
-        int ans = *unreserved.begin();
-        unreserved.erase(ans);
+        int ans = unreserved.top();
+        unreserved.pop();
         return ans;
     }
     
     void unreserve(int seatNumber) {
-        unreserved.insert(seatNumber);
+        unreserved.push(seatNumber);
     }
 };
 
