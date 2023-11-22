@@ -49,6 +49,8 @@ public:
                 
                 int new_k = curr.k - grid[newRow][newCol];
                 if (new_k < 0) continue;
+                
+                // This spot has already been checked, so we should save our eliminations for later
                 if (seen[newRow][newCol] >= new_k) continue;
                 
                 
