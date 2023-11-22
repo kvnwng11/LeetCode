@@ -8,7 +8,8 @@ public:
             int val = arr[i];
             adjList[val].push_back(i);
         }
-
+        
+        unordered_set<int> visitedVals;
         
         vector<bool> visited(n, 0);
         visited[0] = 1;
@@ -30,15 +31,16 @@ public:
 
                 if (curr == n-1)
                     return ans;
-            
-                for (int neighbor : adjList[arr[curr]]) {
-                    if (!visited[neighbor]) {
-                        visited[neighbor] = 1;
-                        q.push(neighbor);
+                
+                if (!visitedVals.count(arr[curr])) {
+                    for (int neighbor : adjList[arr[curr]]) {
+                        if (!visited[neighbor]) {
+                            visited[neighbor] = 1;
+                            q.push(neighbor);
+                        }
                     }
                 }
-
-                adjList.erase(arr[curr]);
+                visitedVals.insert(arr[curr]);
 
                 if (curr+1 < n and !visited[curr+1]) {
                     visited[curr+1] = 1;
