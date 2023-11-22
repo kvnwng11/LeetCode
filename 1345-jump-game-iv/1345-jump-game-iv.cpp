@@ -8,14 +8,7 @@ public:
             int val = arr[i];
             adjList[val].push_back(i);
         }
-        
-        for (auto &[val, a] : adjList) {
-            cout << val << endl;
-            for (int n : a) {
-                cout << n << " ";
-            }
-            cout << endl << endl;
-        }
+
         
         vector<bool> visited(n, 0);
         visited[0] = 1;
