@@ -20,7 +20,7 @@ class Solution:
                 new_x = x + dx
                 new_y = y + dy
                 
-                if inBounds(new_y, new_y, n, m):
+                if inBounds(new_y, new_y, n, m) and not visited[new_x][new_y]:
                     curr_diff = abs(heights[new_x][new_y] - heights[x][y])
                     max_diff = max(curr_diff, max_diffs[x][y])
                     
