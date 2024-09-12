@@ -11,10 +11,8 @@ public:
 
             chars[ans++] = chars[i];
             if (length > 1)
-            {
                 for (char c : to_string(length))
                     chars[ans++] = c;
-            }
 
             i += length;
         }
