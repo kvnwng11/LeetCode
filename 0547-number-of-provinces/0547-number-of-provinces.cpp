@@ -1,52 +1,53 @@
 class Solution {
 private:
     class UnionFind {
-    private:
-        unordered_map<int, int> father;
+        private:
+            unordered_map<int, int> leader;
+        public:
+            UnionFind() = default;
 
-    public:
-        UnionFind() {}
-
-        void add(int x) {
-            if (father.find(x) == father.end())
-                father[x] = x;
-        }
-
-        int find(int x) {
-            if (x == father[x])
-                return x; 
-            int temp = father[x];
-            father[x] = find(temp);
-            return father[x];
-        }
-
-        void unionFind(int x, int y) {
-            x = find(x);
-            y = find(y);
-            father[x] = y; 
-        }
-
-        int getAns() {
-            int ans = 0;
-            for (auto p : father) {
-                if (p.second == p.first)
-                    ans++;
+            int find(int x) {
+                if (x == leader[x]) return x;
+                int parent = find(leader[x]);
+                leader[x] = parent;
+                return parent;
             }
-            return ans;
-        }
+
+            void add(int x) {
+                leader[x] = x;
+            }
+
+            void add(int x, int y) {
+                if (leader.find(x) == leader.end()) leader[x] = x;
+                if (leader.find(y) == leader.end()) leader[y] = y;
+                leader[find(x)] = find(y);
+            }
+
+            int numGroups() const {
+                int ans = 0;
+                for (auto &[x, parent] : leader) {
+                    if (x == parent) ans++;
+                }
+                return ans;
+            }
+
+            ~UnionFind() = default;
     };
 
 public:
     int findCircleNum(vector<vector<int>>& isConnected) {
-        UnionFind u;
-        for (int i=0; i<isConnected.size(); ++i) u.add(i);
-        for (int i=0; i<isConnected.size(); ++i) {
-            for (int j=0; j<isConnected.size(); ++j) {
+        UnionFind myUnion;
+        int n = isConnected.size();
+        int m = isConnected.size();
+
+        for (int i=0; i<n; ++i) {
+            for (int j=0; j<m; ++j) {
                 if (isConnected[i][j]) {
-                    u.unionFind(i, j);
+                    myUnion.add(i, j);
                 }
             }
         }
-        return u.getAns();
+
+        return myUnion.numGroups();
     }
 };
