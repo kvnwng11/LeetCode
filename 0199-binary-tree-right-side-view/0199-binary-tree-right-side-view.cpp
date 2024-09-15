@@ -16,19 +16,19 @@ public:
 
         if (!root) return ans;
 
-        vector<TreeNode*> level;
+        deque<TreeNode*> level;
         level.push_back(root);
 
         while (!level.empty()) {
-            vector<TreeNode*> newLevel;
+            int size = level.size();
             ans.push_back(level.back()->val);
 
-            for (auto node : level) {
-                if (node->left) newLevel.push_back(node->left);
-                if (node->right) newLevel.push_back(node->right);
+            for (int i=0; i<size; ++i) {
+                TreeNode* node = level.front();
+                level.pop_front();
+                if (node->left) level.push_back(node->left);
+                if (node->right) level.push_back(node->right);
             }
-
-            level = newLevel;
         }
 
         return ans;
