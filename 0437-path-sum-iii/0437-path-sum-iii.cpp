@@ -11,28 +11,26 @@
  */
 class Solution {
 private:
-    int ans = 0;
-    unordered_map<long, int> numSeen;
+    unordered_map<long long, int> prefixSums;
 
-    void solve(TreeNode* curr, long currSum, int targetSum) {
-        if (!curr) return;
+    int solve(TreeNode* curr, long long currSum, int targetSum) {
+        if (!curr) return 0;
 
         currSum += curr->val;
+        int ans = currSum == targetSum;
+        ans += prefixSums[currSum - targetSum];
 
-        if (currSum == targetSum)
-            ans++;
+        prefixSums[currSum] += 1;
         
-        ans += numSeen[currSum - targetSum];
-        numSeen[currSum] += 1;
+        ans += solve(curr->left, currSum, targetSum);
+        ans += solve(curr->right, currSum, targetSum);
 
-        solve(curr->left, currSum, targetSum);
-        solve(curr->right, currSum, targetSum);
-
-        numSeen[currSum] -= 1;
+        prefixSums[currSum] -= 1;
+        return ans;
     }
+
 public:
     int pathSum(TreeNode* root, int targetSum) {
-        solve(root, 0, targetSum);
-        return ans;
+        return solve(root, 0, targetSum);
     }
 };
