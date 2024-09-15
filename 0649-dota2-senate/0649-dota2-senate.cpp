@@ -2,23 +2,44 @@ class Solution {
 public:
     string predictPartyVictory(string senate) {
         int n = senate.size();
-        queue<int> indicesR;
-        queue<int> indicesD;
+        queue<int> indices;
+        int numR = 0, numD = 0;
 
         for (int i=0; i<senate.size(); ++i) {
-            if (senate[i] == 'R') indicesR.push(i);
-            else indicesD.push(i);
+            indices.push(i);
+            if (senate[i] == 'R') numR++;
+            else numD++;
         }
 
-        while (indicesR.size() > 0 and indicesD.size() > 0) {
+        int banR = 0, banD = 0;
+        while (numR > 0 and numD > 0) {
             
-            int rTurn = indicesR.front(); indicesR.pop();
-            int dTurn = indicesD.front(); indicesD.pop();
+            int curr = indices.front(); indices.pop();
 
-            if (rTurn < dTurn) indicesR.push(dTurn + n);
-            else indicesD.push(rTurn + n);
+            if (senate[curr] == 'R') {
+                if (banR) {
+                    numR--;
+                    banR--;
+                }
+                else {
+                    banD++;
+                    indices.push(curr);
+                }
+            }
+            else {
+                
+                if (banD) {
+                    numD--;
+                    banD--;
+                }
+                else {
+                    banR++;
+                    indices.push(curr);
+                }
+            }
+
         }
 
-        return indicesR.empty()? "Dire": "Radiant";
+        return numD > 0? "Dire": "Radiant";
     }
 };
