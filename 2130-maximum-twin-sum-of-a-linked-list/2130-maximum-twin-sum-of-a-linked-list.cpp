@@ -9,20 +9,39 @@
  * };
  */
 class Solution {
+private:
+    ListNode* reverse(ListNode* node) {
+        if (!node or !node->next) return node;
+
+        ListNode* rev = reverse(node->next);
+        node->next->next = node;
+        node->next = nullptr;
+        return rev;
+    }
+
 public:
     int pairSum(ListNode* head) {
-        vector<int> nums;
-        while (head) {
-            nums.push_back(head->val);
-            head = head->next;
+        ListNode* slow = head;
+        ListNode* fast = head->next;
+
+        while (fast and fast->next) {
+            slow = slow->next;
+            fast = fast->next->next;
         }
 
+        // Slow points to midpoint
+        ListNode* reversed = reverse(slow);
+
+        ListNode* l1 = reversed;
+        ListNode* l2 = head;
+
         int ans = 0;
-        int n = nums.size();
-        for (int i=0; i<n/2; ++i) {
-            int other = (n - 1 - i);
-            ans = max(ans, nums[i] + nums[other]);
+        while (l1 and l2) {
+            ans = max(ans, l1->val + l2->val);
+            l1 = l1->next;
+            l2 = l2->next;
         }
+
         return ans;
     }
 };
