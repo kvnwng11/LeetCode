@@ -20,11 +20,11 @@ private:
         
         if (isRightChild) {
             solve(curr->left, false, length+1);
-            solve(curr->left, true, 0);
+            solve(curr->right, true, 1);
         }
         else {
             solve(curr->right, true, length+1);
-            solve(curr->right, false, 0);
+            solve(curr->left, false, 1);
         }
     }
 
