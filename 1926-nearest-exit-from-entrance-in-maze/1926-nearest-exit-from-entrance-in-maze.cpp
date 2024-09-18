@@ -33,11 +33,8 @@ public:
                 }
             }
             
-            
-
             ans++;
         }
-
 
         return -1;
     }
