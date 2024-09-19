@@ -13,9 +13,17 @@ public:
                 continue;
             }
 
-            auto idx = lower_bound(potions.begin(), potions.end(), target) - potions.begin();
+            int left = 0, right = potions.size()-1;
+            while (left <= right) {
+                int mid = left + (right - left) / 2;
+
+                if (potions[mid] >= target)
+                    right = mid - 1;
+                else 
+                    left = mid + 1;
+            }
         
-            ans.push_back(potions.size() - idx);
+            ans.push_back(potions.size() - left);
         }
 
         return ans;
