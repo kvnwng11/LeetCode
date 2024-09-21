@@ -1,40 +1,38 @@
 class Solution {
 public:
     int minDistance(string word1, string word2) {
-        
-        int m = word1.size();
-        int n = word2.size();
-        
-        if (m == 0) return n;
-        if (n == 0) return m;
-        
-        vector<vector<int>> dp(m+1, vector<int>(n+1, 0));
 
-        // Initialize
-        for (int i=1; i<=m; ++i)
+        int length1 = word1.size() + 1;
+        int length2 = word2.size() + 1;
+
+        vector<vector<int>> dp(length1, vector<int>(length2, 0));
+
+        for (int i=0; i<length1; ++i) {
             dp[i][0] = i;
-        for (int j=1; j<=n; ++j)
+        }
+
+        for (int j=0; j<length2; ++j) {
             dp[0][j] = j;
-        
-        // 2D DP
-        for (int i=1; i<=m; ++i) {
-            for (int j=1; j<=n; ++j) {
-                // Need to make a change to word[j-1]
-                if (word1[i-1] != word2[j-1]) {
-                    int insertCost = dp[i-1][j] + 1;
-                    int deleteCost = dp[i][j-1] + 1;
-                    int replaceCost = dp[i-1][j-1] + 1;
-                    
-                    dp[i][j] = min(insertCost, min(deleteCost, replaceCost));
-                }
-                // No change
-                else {
+        }
+
+
+        for (int i=1; i<length1; ++i) {
+            for (int j=1; j<length2; ++j) {
+                char c1 = word1[i-1];
+                char c2 = word2[j-1];
+
+                if (c1 == c2) {
                     dp[i][j] = dp[i-1][j-1];
+                }
+                else {
+                    int addChar = dp[i][j-1];
+                    int deleteChar = dp[i-1][j];
+                    int replace = dp[i-1][j-1];
+                    dp[i][j] = min(addChar, min(deleteChar, replace)) + 1;
                 }
             }
         }
-        
-        
-        return dp[m][n];
+
+        return dp[word1.size()][word2.size()];
     }
 };
