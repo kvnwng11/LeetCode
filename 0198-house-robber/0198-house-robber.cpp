@@ -1,19 +1,17 @@
 class Solution {
+private:
+    unordered_map<int, int> memo;
+
+    int recurse(vector<int>& nums, int idx) {
+        if (idx >= nums.size()) return 0;
+        if (memo.find(idx) != memo.end()) return memo[idx];
+
+        memo[idx] = max(recurse(nums, idx+1), recurse(nums, idx+2) + nums[idx]);
+        return memo[idx];
+    }
+
 public:
     int rob(vector<int>& nums) {
-        int n = nums.size();
-        if (n == 1) return nums[0];
-
-        int oneAway = nums[n-1];
-        int twoAway = 0;
-
-        for (int i=n-2; i>=0; --i) {
-            int curr = max(oneAway, twoAway + nums[i]);
-
-            twoAway = oneAway;
-            oneAway = curr;
-        }
-
-        return oneAway;
+        return recurse(nums, 0);
     }
 };
