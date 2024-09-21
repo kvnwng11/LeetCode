@@ -4,16 +4,16 @@ public:
         int n = nums.size();
         if (n == 1) return nums[0];
 
-        vector<int> dp(n, 0);
+        int oneAway = nums[n-1];
+        int twoAway = 0;
 
-        int ans = 0;
-        for (int i=0; i<n; ++i) {
-            dp[i] = nums[i];
-            if (i == 2) dp[i] += dp[i-2];
-            else if (i >= 3) dp[i] += max(dp[i-2], dp[i-3]);
-            ans = max(ans, dp[i]);
+        for (int i=n-2; i>=0; --i) {
+            int curr = max(oneAway, twoAway + nums[i]);
+
+            twoAway = oneAway;
+            oneAway = curr;
         }
 
-        return ans;
+        return oneAway;
     }
 };
