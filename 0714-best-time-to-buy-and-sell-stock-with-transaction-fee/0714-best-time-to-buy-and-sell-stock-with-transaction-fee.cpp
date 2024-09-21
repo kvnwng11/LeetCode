@@ -3,16 +3,16 @@ public:
     int maxProfit(vector<int>& prices, int fee) {
         int n = prices.size();
 
-        vector<int> free(n, 0);
-        vector<int> holding(n, 0);
-
-        holding[0] = -prices[0];
+        int free = 0;
+        int holding = -prices[0];
 
         for (int i=1; i<n; ++i) {
-            free[i] = max(free[i-1], holding[i-1] + prices[i] - fee);
-            holding[i] = max(holding[i-1], free[i-1] - prices[i]);
+            int oldHolding = holding;
+
+            holding = max(holding, free - prices[i]);
+            free = max(free, oldHolding + prices[i] - fee);
         }
 
-        return max(holding[n-1], free[n-1]);
+        return free;
     }
 };
