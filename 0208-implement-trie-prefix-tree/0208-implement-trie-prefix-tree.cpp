@@ -1,52 +1,67 @@
-struct TrieNode {
-    bool isEnd = 0;
-    TrieNode* child[26];
+class TrieNode {
+private:
+    vector<TrieNode*> children;
+    bool end = false;
 
+public:
     TrieNode() {
-        for (int i=0; i<26; ++i) {
-            child[i] = nullptr;
-        }
+        children = vector<TrieNode*>(26, nullptr);
     }
+
+    void createChild(char c) {
+        children[c - 'a'] = new TrieNode();
+    }
+
+    bool childExists(char c) {
+        return children[c - 'a'];
+    }
+
+    TrieNode* getChild(char c) {
+        return children[c - 'a'];
+    }
+
+    void setNotEnd() { end = false; }
+
+    void setEnd() { end = true; }
+
+    bool isEnd() { return end; }
+
 };
 
 class Trie {
 private:
-    TrieNode* root = new TrieNode();
+    TrieNode* root;
 public:
     Trie() {
+        root = new TrieNode();
     }
     
     void insert(string word) {
         TrieNode* curr = root;
-        for (int i=0; i<word.size(); ++i) {
-            int index = word[i] - 'a';
-            if (!curr->child[index])
-                curr->child[index] = new TrieNode();
-            curr = curr->child[index];
+        for (char c : word) {
+            if (!curr->childExists(c))
+                curr->createChild(c);
+            curr = curr->getChild(c);
         }
-        curr->isEnd = 1;
+        curr->setEnd();
     }
     
     bool search(string word) {
         TrieNode* curr = root;
-        for (int i=0; i<word.size(); ++i) {
-            int index = word[i] - 'a';
-            if (curr->child[index] == nullptr)
-                return 0;
-            curr = curr->child[index];
+        for (char c : word) {
+            curr = curr->getChild(c);
+            if (!curr) return false;
         }
-        return curr->isEnd;
+        return curr->isEnd();
     }
     
     bool startsWith(string prefix) {
         TrieNode* curr = root;
-        for (int i=0; i<prefix.size(); ++i) {
-            int index = prefix[i] - 'a';
-            if (curr->child[index] == nullptr)
-                return 0;
-            curr = curr->child[index];
+        for (char c : prefix) {
+            curr = curr->getChild(c);
+            if (!curr) return false;
         }
-        return 1;
+        return true;
     }
 };
 
