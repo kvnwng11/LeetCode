@@ -8,24 +8,15 @@ public:
         children = vector<TrieNode*>(26, nullptr);
     }
 
-    void createChild(char c) {
-        children[c - 'a'] = new TrieNode();
-    }
+    inline void createChild(char c) { children[c - 'a'] = new TrieNode(); }
 
-    bool childExists(char c) {
-        return children[c - 'a'];
-    }
+    inline bool childExists(char c) { return children[c - 'a']; }
 
-    TrieNode* getChild(char c) {
-        return children[c - 'a'];
-    }
+    inline TrieNode* getChild(char c) { return children[c - 'a']; }
 
-    void setNotEnd() { end = false; }
+    inline void setEnd() { end = true; }
 
-    void setEnd() { end = true; }
-
-    bool isEnd() { return end; }
-
+    inline bool isEnd() { return end; }
 };
 
 class Trie {
