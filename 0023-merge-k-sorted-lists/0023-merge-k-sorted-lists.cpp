@@ -8,28 +8,42 @@
  *     ListNode(int x, ListNode *next) : val(x), next(next) {}
  * };
  */
-typedef pair<int, ListNode*> pil;
-
 class Solution {
+private:
+    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+        ListNode* head = new ListNode(-1);
+        ListNode* sentinel = head;
+
+        while (list1 and list2) {
+            if (list1->val < list2->val) {
+                sentinel->next = list1;
+                list1 = list1->next;
+            }
+            else {
+                sentinel->next = list2;
+                list2 = list2->next;
+            }
+            sentinel = sentinel->next;
+        }
+
+        if (list1) sentinel->next = list1;
+        if (list2) sentinel->next = list2;
+
+        return head->next;
+    }
+
 public:
     ListNode* mergeKLists(vector<ListNode*>& lists) {
-        priority_queue<pil, vector<pil>, greater<pil>> pq;
-        for (int i=0; i<lists.size(); ++i) {
-            if (lists[i])
-                pq.push({lists[i]->val, lists[i]});
+        if (lists.empty()) return nullptr;
+        
+        int size = lists.size();
+        int interval = 1;
+        while (interval < size) {
+            for (int i=0; i < size - interval; i += interval * 2)
+                lists[i] = mergeTwoLists(lists[i], lists[i + interval]);
+            interval *= 2;
         }
-        ListNode* ans = new ListNode(0);
-        ListNode* head = ans;
-        while (!pq.empty()) {
-            auto [val, node] = pq.top();
-            pq.pop();
-
-            head->next = node;
-            head = head->next;
-            
-            if (node->next)
-                pq.push({node->next->val, node->next});
-        }
-        return ans->next;
+                
+        return lists[0];
     }
 };
