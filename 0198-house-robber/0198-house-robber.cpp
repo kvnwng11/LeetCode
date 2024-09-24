@@ -1,17 +1,18 @@
 class Solution {
-private:
-    unordered_map<int, int> memo;
-
-    int recurse(vector<int>& nums, int idx) {
-        if (idx >= nums.size()) return 0;
-        if (memo.find(idx) != memo.end()) return memo[idx];
-
-        memo[idx] = max(recurse(nums, idx+1), recurse(nums, idx+2) + nums[idx]);
-        return memo[idx];
-    }
-
 public:
     int rob(vector<int>& nums) {
-        return recurse(nums, 0);
+        if (nums.size() == 1) return nums[0];
+        int n = nums.size();
+        int robTwo = nums[n-1];
+        int robOne = max(robTwo, nums[n-2]);
+
+        for (int i=n-3; i>=0; i--) {
+            int tmp = max(robOne, robTwo + nums[i]);
+
+            robTwo = robOne;
+            robOne = tmp;
+        }
+
+        return robOne;
     }
 };
