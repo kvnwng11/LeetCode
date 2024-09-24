@@ -6,19 +6,12 @@ public:
 
         int i=n-1;
         while (i > 0) {
-            bool canJump = false;
             int j = 1;
-            while (i-j >= 0) {
-                if (nums[i-j] >= j) {
-                    i = i-j;
-                    canJump = true;
-                    break;
-                }
+            while (i-j >= 0 and nums[i-j] < j)
                 j++;
-            }
 
-            if (canJump) continue;
-            else return false;
+            if (i-j < 0) return false;
+            i = i-j;
         }
 
         return true;
