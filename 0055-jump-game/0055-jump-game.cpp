@@ -2,18 +2,12 @@ class Solution {
 public:
     bool canJump(vector<int>& nums) {
         int n = nums.size();
-        
-
-        int i=n-1;
-        while (i > 0) {
-            int j = 1;
-            while (i-j >= 0 and nums[i-j] < j)
-                j++;
-
-            if (i-j < 0) return false;
-            i = i-j;
+        int lastReachable = n-1;
+        for (int i=n-1; i>=0; --i) {
+            if (i + nums[i] >= lastReachable)
+                lastReachable = i;
         }
 
-        return true;
+        return lastReachable == 0;
     }
 };
