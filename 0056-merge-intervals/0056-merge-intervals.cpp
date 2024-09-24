@@ -5,12 +5,14 @@ public:
 
         vector<vector<int>> ans;
 
-        for (auto &interval : intervals) {
-            if (ans.empty() or ans.back()[1] < interval[0]) {
-                ans.push_back(interval);
-            }  
+        for (int i=0; i<intervals.size(); ++i) {
+            // non-overlapping
+            if (ans.empty() || ans.back()[1] < intervals[i][0]) {
+                ans.push_back(intervals[i]);
+            }
+            // overlapping
             else {
-                ans.back()[1] = max(ans.back()[1], interval[1]);
+                ans.back()[1] = max(ans.back()[1], intervals[i][1]);
             }
         }
 
