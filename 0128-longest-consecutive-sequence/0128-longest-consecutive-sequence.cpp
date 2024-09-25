@@ -12,8 +12,8 @@ public:
         for (int num : nums) {
             if (!nodes.count(num-1)) {
                 int currNum = num;
-                int currDist = 1;
-                while (nodes.count(currNum+1)) {
+                int currDist = 0;
+                while (nodes.count(currNum)) {
                     currNum++;
                     currDist++;
                 }
