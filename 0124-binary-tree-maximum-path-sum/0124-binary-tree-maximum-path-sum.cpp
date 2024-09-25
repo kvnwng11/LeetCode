@@ -12,21 +12,21 @@
 class Solution {
 private:
     int ans = INT_MIN;
-    
-    int solve(TreeNode* node) {
-        if (!node) return 0;
-        
-        int left = max(solve(node->left), 0);
-        int right = max(solve(node->right), 0);
-        
-        ans = max(ans, left + right + node->val);
-        
-        return max(left + node->val, right + node->val);
+
+    int gainFromSubtree(TreeNode* root) {
+        if (!root) return 0;
+
+        int gainFromLeft = max(gainFromSubtree(root->left), 0);
+        int gainFromRight = max(gainFromSubtree(root->right), 0);
+
+        ans = max(ans, gainFromLeft + gainFromRight + root->val);
+
+        return max(gainFromLeft, gainFromRight) + root->val;
     }
-    
+
 public:
     int maxPathSum(TreeNode* root) {
-        solve(root);
+        gainFromSubtree(root);
         return ans;
     }
 };
