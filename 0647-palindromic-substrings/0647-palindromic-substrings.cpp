@@ -1,13 +1,15 @@
 class Solution {
     int expand(string &s, int left, int right) {
         int n = s.size();
+        int ans = 1;
 
         while (left-1 >= 0 and right+1 < n and s[left-1] == s[right+1]) {
             left--;
             right++;
+            ans++;
         }
         
-        return left == right? 1 : right - left;
+        return ans;
     }
 public:
     int countSubstrings(string s) {
