@@ -5,7 +5,7 @@ public:
 
         for (string &str : strs) {
             // Get character frequencies of this string
-            int counts[26] = {};
+            int counts[26] = {0};
             for (char c : str)
                 counts[c - 'a']++;
 
