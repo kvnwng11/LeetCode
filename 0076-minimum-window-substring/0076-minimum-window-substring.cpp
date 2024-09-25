@@ -1,59 +1,41 @@
 class Solution {
+private:
+    bool containedInWindow(unordered_map<char, int>& sCounts, unordered_map<char, int>& tCounts) {
+        for (auto &[c, count] : tCounts) {
+            if (sCounts[c] < count) return false;
+        }
+        return true;
+    }
+
 public:
     string minWindow(string s, string t) {
         if (t.size() > s.size()) return "";
-        if (!t.size() or !s.size()) return "";
-        
-        int left = 0;
-        int ansLeft = 0, length = INT_MAX;
+        if (t == s) return s;
 
-        unordered_map<char, int> countS;
-        unordered_map<char, int> countT;
+        unordered_map<char, int> tCounts;
+        unordered_map<char, int> sCounts;
+        for (char c : t)
+            tCounts[c] += 1;
 
-        for (int i=0; i<t.size(); ++i) {
-            countT[t[i]] += 1;
-        }
+        int minLength = INT_MAX;
+        int minStart = -1;
 
-        vector<pair<char, int>> filteredS;
-        for (int i=0; i<s.size(); ++i) {
-            if (countT.count(s[i])) {
-                filteredS.push_back({s[i], i});
-            }
-        }
+        int left = 0, right;
+        for (right = 0; right < s.size(); ++right) {
+            int c = s[right];
+            sCounts[c] += 1;
 
-        int formed = 0, required = countT.size();
-        for (int right = 0; right < filteredS.size(); ++right) {
-            // Add to window
-            char c = filteredS[right].first;
-            int idx = filteredS[right].second;
-            countS[c] += 1;
-
-            // Check if occurances match up
-            if (countT.count(c) and countS[c] == countT[c]) {
-                formed++;
-            }
-
-            while (left <= right and formed == required) {
-                int end = filteredS[right].second;
-                int start = filteredS[left].second;
-
-                // New answer
-                if (end - start + 1 < length) {
-                    length = end - start + 1;
-                    ansLeft = start;
+            while (left <= right && containedInWindow(sCounts, tCounts)) {
+                if (right - left + 1 < minLength) {
+                    minLength = right - left + 1;
+                    minStart = left;
                 }
 
-                c = filteredS[left].first;
-                countS[c] -= 1;
-
-                if (countT.count(c) and countS[c] < countT[c]) {
-                    formed--;
-                }
-
+                sCounts[s[left]] -= 1;
                 left++;
             }
         }
 
-        return length == INT_MAX? "" : s.substr(ansLeft, length);
+        return minStart == -1? "" : s.substr(minStart, minLength);
     }
 };
