@@ -1,12 +1,4 @@
 class Solution {
-private:
-    bool containedInWindow(unordered_map<char, int>& sCounts, unordered_map<char, int>& tCounts) {
-        for (auto &[c, count] : tCounts) {
-            if (sCounts[c] < count) return false;
-        }
-        return true;
-    }
-
 public:
     string minWindow(string s, string t) {
         if (t.size() > s.size()) return "";
@@ -21,17 +13,25 @@ public:
         int minStart = -1;
 
         int left = 0, right;
+        int formed = 0, required = tCounts.size();
         for (right = 0; right < s.size(); ++right) {
             int c = s[right];
             sCounts[c] += 1;
 
-            while (left <= right && containedInWindow(sCounts, tCounts)) {
+            if (tCounts.find(c) != tCounts.end() && sCounts[c] == tCounts[c])
+                formed++;
+
+            while (left <= right && formed == required) {
+                c = s[left];
                 if (right - left + 1 < minLength) {
                     minLength = right - left + 1;
                     minStart = left;
                 }
 
-                sCounts[s[left]] -= 1;
+                sCounts[c] -= 1;
+                if (tCounts.find(c) != tCounts.end() && sCounts[c] < tCounts[c])
+                    formed--;
+
                 left++;
             }
         }
