@@ -1,27 +1,22 @@
 class Solution {
 public:
     int characterReplacement(string s, int k) {
-        int start = 0;
-        int counts[26] = {0};
-        int biggest = 0;
+        int left = 0, right;
         int ans = 0;
+        unordered_map<char, int> counts;
+        int maxFrequency = 0;
 
-        for (int end = 0; end<s.size(); ++end) {
-            int currChar = s[end] - 'A';
+        for (right = 0; right < s.size(); ++right) {
+            char c = s[right];
+            counts[c] += 1;
 
-            counts[currChar] += 1;
+            maxFrequency = max(maxFrequency, counts[c]);
 
-            biggest = max(biggest, counts[currChar]);
-
-            if (end - start + 1 - biggest > k) {
-                int outgoingChar = s[start] - 'A';
-
-                counts[outgoingChar] -= 1;
-
-                start++;
+            if ((right - left + 1 - maxFrequency) > k) {
+                counts[s[left]]--;
+                left++;
             }
-
-            ans = end - start + 1;
+            ans = max(ans, right - left + 1);
         }
 
         return ans;
