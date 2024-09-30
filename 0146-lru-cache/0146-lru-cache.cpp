@@ -44,7 +44,6 @@ public:
     }
     
     void put(int key, int value) {
-        //cout << "put: " << key << " " << value << endl;
         if (keyToNode.count(key)) {
             keyToNode[key]->val = value;
             moveToEnd(keyToNode[key]);
@@ -53,7 +52,6 @@ public:
 
         if (keyToNode.size() == capacity) {
             CacheNode* toRemove = head->next;
-            //cout << toRemove->key << " " << toRemove->val << endl;
             int keyToRemove = toRemove->key;
             keyToNode.erase(keyToRemove);
             head->next = toRemove->next;
