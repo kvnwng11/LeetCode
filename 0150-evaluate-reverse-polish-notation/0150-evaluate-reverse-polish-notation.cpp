@@ -1,36 +1,20 @@
 class Solution {
-private:
-    bool isOperation(string &token) {
-        return token == "+" || token == "-" || token == "*" || token == "/";
-    }
-
 public:
     int evalRPN(vector<string>& tokens) {
         stack<int> nums;
+        unordered_map<string, function<int(int, int)>> operations = {
+            {"+", [](int a, int b) { return a + b; }},
+            {"-", [](int a, int b) { return a - b; }},
+            {"*", [](int a, int b) { return a * b; }},
+            {"/", [](int a, int b) { return a / b; }}
+        };
+
 
         for (string &token : tokens) {
-            if (isOperation(token)) {
-                char op = token[0];
+            if (operations.count(token)) {
                 int num2 = nums.top(); nums.pop();
                 int num1 = nums.top(); nums.pop();
-                switch(op) {
-                    case '+': {
-                        nums.push(num1 + num2);
-                        break;
-                    }
-                    case '-': {
-                        nums.push(num1 - num2);
-                        break;
-                    }
-                    case '*': {
-                        nums.push(num1 * num2);
-                        break;
-                    }
-                    case '/': {
-                        nums.push(num1 / num2);
-                        break;
-                    }
-                }
+                nums.push(operations[token](num1, num2));
             }
             else {
                 nums.push(stoi(token));
