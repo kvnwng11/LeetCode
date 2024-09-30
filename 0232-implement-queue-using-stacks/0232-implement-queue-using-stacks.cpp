@@ -2,6 +2,7 @@ class MyQueue {
 private:
     stack<int> front;
     stack<int> back;
+    int frontElt;
 
 public:
     MyQueue() {
@@ -9,28 +10,25 @@ public:
     }
     
     void push(int x) {
-        while (!back.empty()) {
-            front.push(back.top());
-            back.pop();
-        }
+        if (front.empty()) frontElt = x;
         front.push(x);
     }
     
     int pop() {
-        int ans = peek();
+        if (back.empty()) {
+            while (!front.empty()) {
+                back.push(front.top());
+                front.pop();
+            }
+        }
+        int ans = back.top();
         back.pop();
         return ans;
     }
     
     int peek() {
-        int ans = -1;
-        while (!front.empty()) {
-            back.push(front.top());
-            ans = front.top();
-            front.pop();
-        }
-        ans = back.top();
-        return ans;
+        if (!back.empty()) return back.top();
+        return frontElt;
     }
     
     bool empty() {
