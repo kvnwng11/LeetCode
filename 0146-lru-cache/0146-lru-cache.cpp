@@ -1,88 +1,72 @@
+struct CacheNode {
+    int val = -1;
+    int key = -1;
+    CacheNode* next = nullptr;
+    CacheNode* prev = nullptr;
+    CacheNode(int _key, int _val) : key{_key}, val{_val} {}
+};
+
 class LRUCache {
 private:
-    struct Node {
-        int key;
-        Node* next = nullptr;
-        Node* prev = nullptr;
-        Node(int _val) : key{_val} {}
-    };
+    unordered_map<int, CacheNode*> keyToNode;
 
-    Node* front = new Node(-1);
-    Node* back = new Node(-1);
+    CacheNode* head = new CacheNode(-1, -1);
+    CacheNode* tail = new CacheNode(-1, -1);
 
-    unordered_map<int, int> cache;
-    unordered_map<int, Node*> place;
-    int cap = 0;
+    int capacity = 0;
 
-    // Place at back
-    void addNode(int key) {
-        Node* n = new Node(key);
+    void moveToEnd(CacheNode* node) {
+        CacheNode* prevEnd = tail->prev;
+        if (prevEnd == node) return;
+        
+        node->prev->next = node->next;
+        node->next->prev = node->prev;
 
-        Node* last = back->prev;
-        last->next = n;
-        n->prev = last;
-
-        back->prev = n;
-        n->next = back;
-
-        place[key] = n;
-    }
-
-    // Pop front
-    void removeNode() {
-        Node* toRemove = front->next;
-
-        front->next = toRemove->next;
-        toRemove->next->prev = front;
-
-        int key = toRemove->key;
-        cache.erase(key);
-        place.erase(key);
-        //delete toRemove;
-    }
-
-    void updateCache(int key) {
-        // Remove from middle
-        if (place.count(key)) {
-            Node* n = place[key];
-
-            Node* prev = n->prev;
-            Node* next = n->next;
-            prev->next = next;
-            next->prev = prev;
-        }
-
-        addNode(key);
-
-        // Too big
-        if (cache.size() > cap)
-            removeNode();
+        prevEnd->next = node;
+        node->next = tail;
+        tail->prev = node;
+        node->prev = prevEnd;
     }
 
 public:
-    LRUCache(int capacity) {
-        cap = capacity;
-        front->next = back;
-        back->prev = front;
+    LRUCache(int _capacity) : capacity{_capacity} {
+        head->next = tail;
+        tail->prev = head;
     }
     
     int get(int key) {
-        if (!cache.count(key))
-            return -1;
+        if (!keyToNode.count(key)) return -1;
+        int ans = keyToNode[key]->val;
 
-        int ans = cache[key];
-
-        // Update LRU
-        updateCache(key);
+        moveToEnd(keyToNode[key]);
 
         return ans;
     }
     
     void put(int key, int value) {
-        cache[key] = value;
+        //cout << "put: " << key << " " << value << endl;
+        if (keyToNode.count(key)) {
+            keyToNode[key]->val = value;
+            moveToEnd(keyToNode[key]);
+            return;
+        }
 
-        // Update LRU
-        updateCache(key);
+        if (keyToNode.size() == capacity) {
+            CacheNode* toRemove = head->next;
+            //cout << toRemove->key << " " << toRemove->val << endl;
+            int keyToRemove = toRemove->key;
+            keyToNode.erase(keyToRemove);
+            head->next = toRemove->next;
+            toRemove->next->prev = head;
+            delete toRemove;
+        }
+
+        CacheNode* newNode = new CacheNode(key, value);
+        tail->prev->next = newNode;
+        newNode->prev = tail->prev;
+        newNode->next = tail;
+        tail->prev = newNode;
+        keyToNode[key] = newNode;
     }
 };
 
