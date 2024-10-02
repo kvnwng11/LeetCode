@@ -1,43 +1,46 @@
 class Solution {
 private:
     const int VISITED = INT_MIN;
+    int DIRECTIONS[4][2] = {
+        {0, 1},
+        {1, 0},
+        {0, -1},
+        {-1, 0}
+    };
 
 public:
     vector<int> spiralOrder(vector<vector<int>>& matrix) {
-        vector<int> ans;
 
         int m = matrix.size();
         int n = matrix[0].size();
 
-        int up = 0;
-        int down = m-1;
-        int left = 0;
-        int right = n-1;
+        int currDir = 0;
+        int changeDir = 0;
 
-        while (ans.size() < m * n) {
-            
-            // left to right
-            for (int col=left; col<=right; ++col)
-                ans.push_back(matrix[up][col]);
-            
-            // go down
-            for (int row = up+1; row<=down; ++row)
-                ans.push_back(matrix[row][right]);
+        
+        int row = 0, col = 0;
 
-            // right to left
-            if (up != down)
-                for (int col=right-1; col>=left; --col)
-                    ans.push_back(matrix[down][col]);
+        vector<int> ans{matrix[0][0]};
 
-            // go up
-            if (left != right)
-                for (int row=down-1; row > up; --row)
-                    ans.push_back(matrix[row][left]);
+        matrix[0][0] = VISITED;
 
-            left++;
-            right--;
-            up++;
-            down--;
+        while (changeDir < 2) {
+            while (0 <= row + DIRECTIONS[currDir][0]
+                      && row + DIRECTIONS[currDir][0] < m 
+                      && 0 <= col + DIRECTIONS[currDir][1]
+                      && col + DIRECTIONS[currDir][1] < n
+                      && matrix[row + DIRECTIONS[currDir][0]][col + DIRECTIONS[currDir][1]] != VISITED) {
+                changeDir = 0;
+
+                row += DIRECTIONS[currDir][0];
+                col += DIRECTIONS[currDir][1];
+
+                ans.push_back(matrix[row][col]);
+                matrix[row][col] = VISITED;
+            }
+
+            currDir = (currDir + 1) % 4;
+            changeDir++;
         }
 
         return ans;
