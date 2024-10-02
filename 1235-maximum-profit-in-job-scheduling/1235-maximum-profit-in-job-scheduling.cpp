@@ -1,47 +1,37 @@
 class Solution {
 private:
-    int dp[50001];
-    
-    int findMaxProfit(vector<int> &startTime, vector<vector<int>> &jobs) {
-        int n = startTime.size();
-        
-        for (int position = n-1; position >= 0; --position) {
-            int currProfit = 0;
-            
-            int nextIndex = lower_bound(startTime.begin(), startTime.end(), jobs[position][1]) - startTime.begin();
-            
-            if (nextIndex != n) {
-                currProfit = jobs[position][2] + dp[nextIndex];
+
+    int findMaxProfit(vector<array<int, 3>> &jobs) {
+        int n = jobs.size(), ans = 0;
+        priority_queue<array<int, 2>, vector<array<int, 2>>, greater<array<int, 2>>> pq;
+
+        for (int i=0; i<n; ++i) {
+            auto [start, end, profit] = jobs[i];
+
+            while (!pq.empty() && start >= pq.top()[0]) {
+                ans = max(ans, pq.top()[1]);
+                pq.pop();
             }
-            else {
-                currProfit = jobs[position][2];
-            }
-            
-            if (position == n - 1)
-                dp[position] = currProfit;
-            else
-                dp[position] = max(currProfit, dp[position+1]);
+
+            pq.push({end, profit + ans});
+        }
+
+        while (!pq.empty()) {
+            ans = max(ans, pq.top()[1]);
+            pq.pop();
         }
         
-        
-        return dp[0];
+        return ans;
     }
-    
+
 public:
     int jobScheduling(vector<int>& startTime, vector<int>& endTime, vector<int>& profit) {
-        vector<vector<int>> jobs;
-        
-        for (int i=0; i<profit.size(); ++i) {
+        vector<array<int, 3>> jobs;
+        for (int i=0; i<profit.size(); ++i)
             jobs.push_back({startTime[i], endTime[i], profit[i]});
-        }
-        
+
         sort(jobs.begin(), jobs.end());
-        
-        for (int i=0; i<profit.size(); ++i) {
-            startTime[i] = jobs[i][0];
-        }
-        
-        
-        return findMaxProfit(startTime, jobs);
+
+        return findMaxProfit(jobs);
     }
 };
