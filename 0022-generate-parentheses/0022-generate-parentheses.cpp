@@ -2,25 +2,29 @@ class Solution {
 private:
     vector<string> ans;
 
-    void solve(int n, string s, int numOpen, int numClosed) {
-        if (numClosed == n) {
-            ans.push_back(s);
+    void backtrack(string &curr, int leftCount, int rightCount, int n) {
+        if (curr.size() == 2 * n) {
+            ans.push_back(curr);
             return;
         }
 
-        if (numOpen < n) {
-            solve(n, s + "(", numOpen+1, numClosed);
+        if (leftCount < n) {
+            curr.push_back('(');
+            backtrack(curr, leftCount+1, rightCount, n);
+            curr.pop_back();
         }
-        
-        if (numClosed < numOpen) {
-            solve(n, s + ")", numOpen, numClosed + 1);
+
+        if (leftCount > rightCount) {
+            curr.push_back(')');
+            backtrack(curr, leftCount, rightCount+1, n);
+            curr.pop_back();
         }
     }
 
 public:
     vector<string> generateParenthesis(int n) {
-        string s = "";
-        solve(n, s, 0, 0);
+        string curr = "";
+        backtrack(curr, 0, 0, n);
         return ans;
     }
 };
