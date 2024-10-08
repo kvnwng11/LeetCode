@@ -10,58 +10,43 @@
  */
 class Solution {
 private:
-    ListNode* reverseSegment(ListNode* start, ListNode* end) {
-        // [start, end]
-        //if (!start or !end) return start;
-        cout << start->val << " " << end->val << endl;
-
-        ListNode* after = end->next;
-
-        ListNode* curr = start;
-        ListNode* prev = nullptr;
-
-        while (curr != after) {
-            ListNode* temp = curr->next;
-            curr->next = prev;
-            prev = curr;
-            curr = temp;
+    ListNode* reverseSegment(ListNode* head, int k) {
+        ListNode* newHead = nullptr;
+        ListNode* curr = head;
+        while (k > 0) {
+            ListNode* tmp = curr->next;
+            curr->next = newHead;
+            newHead = curr;
+            curr = tmp;
+            k--;
         }
 
-        start->next = after;
-
-        // Maybe change?
-        return end;
+        return newHead;
     }
 
 public:
     ListNode* reverseKGroup(ListNode* head, int k) {
-        ListNode* ans = new ListNode(-1, head);
-        ListNode* left = ans;
-        ListNode* right = ans;
+        ListNode* curr = head;
+        ListNode* ktail = nullptr;
+        ListNode* newHead = nullptr;
+        while (curr) {
+            int count = 0;
+            curr = head;
+            while (count < k && curr) {
+                curr = curr->next;
+                count++;
+            }
 
-        for (int i=0; i<k; ++i)
-            right = right->next;
-
-
-        while (right) {
-            left->next = reverseSegment(left->next, right);
-
-
-            left = left->next;
-            right = left;
-
-            for (int i=0; i<k; ++i)
-                right = right->next; 
-
-            for (int i=0; i<k-1; ++i) {
-                if (!right)
-                    break;
-                    
-                left = left->next;
-                right = right->next; 
+            if (count == k) {
+                ListNode* revSeg = reverseSegment(head, k);
+                if (!newHead) newHead = revSeg;
+                if (ktail) ktail->next = revSeg;
+                ktail = head;
+                head = curr;
             }
         }
 
-        return ans->next;
+        if (ktail) ktail->next = head;
+        return !newHead? head : newHead;
     }
 };
