@@ -10,30 +10,28 @@ public:
         }
 
         vector<int> minDist(n+1, INT_MAX);
-        stack<pair<int, int>> s;
-        s.push({k, 0});
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+        pq.push({0, k});
+        minDist[k] = 0;
 
-        while (!s.empty()) {
-            auto [curr, dist] = s.top();
-            s.pop();
+        while (!pq.empty()) {
+            auto [dist, curr] = pq.top();
+            pq.pop();
 
             if (dist > minDist[curr]) continue;
 
-            minDist[curr] = dist;
-
             for (auto &[neighbor, weight] : adjList[curr]) {
                 if (dist + weight < minDist[neighbor]) {
-                    s.push({neighbor, dist + weight});
                     minDist[neighbor] = dist + weight;
+                    pq.push({minDist[neighbor], neighbor});
                 }
             }
         }
 
         int ans = 0;
-        for (int i=1; i<n+1; ++i) {
-            if (minDist[i] == INT_MAX) return -1;
+        for (int i=1; i<n+1; ++i)
             ans = max(ans, minDist[i]);
-        }
-        return ans;
+            
+        return ans == INT_MAX? -1 : ans;
     }
 };
