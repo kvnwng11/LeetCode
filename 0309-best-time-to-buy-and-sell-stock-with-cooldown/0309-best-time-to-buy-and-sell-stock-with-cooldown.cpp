@@ -10,14 +10,17 @@ public:
         notHolding[0] = 0;
         holding[0] = -prices[0];
 
-        for (int i=1; i<prices.size(); ++i) {
-            int sellAfterHolding = holding[i-1] + prices[i];
-            int buyAfterCooldown = i >= 2? notHolding[i-2] - prices[i] : INT_MIN;
+        int sold = INT_MIN;
+        int held = -prices[0];
+        int reset = 0;
 
-            holding[i] = max(-prices[i], max(buyAfterCooldown, holding[i-1]));
-            notHolding[i] = max(0, max(sellAfterHolding, notHolding[i-1]));
+        for (int i=1; i<prices.size(); ++i) {
+            int newSold = held + prices[i];
+            held = max(held, reset - prices[i]);
+            reset = max(reset, sold);
+            sold = newSold;
         }
 
-        return notHolding[n-1] < 0? 0 : notHolding[n-1];
+        return max(reset, sold);
     }
 };
