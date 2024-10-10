@@ -1,28 +1,27 @@
 class Solution {
 public:
     bool checkValidString(string s) {
-        int left = 0;
-        for (int i=0; i<s.size(); ++i) {
-            if (s[i] == '(' or s[i] == '*')
-                left++;
-            else
-                left--;
+        int openCount = 0;
+        int closeCount = 0;
+        int n = s.size();
 
-            if (left < 0) return 0;
+        for (int i=0; i<n; ++i) {
+            char c = s[i];
+
+            if (c == '(' || c == '*')
+                openCount++;
+            else
+                openCount--;
+
+            if (s[n - i - 1] == ')' || s[n - i - 1] == '*')
+                closeCount++;
+            else
+                closeCount--;
+
+            if (openCount < 0 || closeCount < 0)
+                return false;
         }
 
-        if (left == 0) return 1;
-
-        int right = 0;
-        for (int i=s.size()-1; i>=0; --i) {
-            if (s[i] == ')' or s[i] == '*')
-                right++;
-            else
-                right--;
-            
-            if (right < 0) return 0;
-        }
-
-        return 1;
+        return true;
     }
 };
